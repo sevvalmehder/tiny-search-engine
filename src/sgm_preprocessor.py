@@ -32,7 +32,7 @@ class SGMPreprocessor(BaseTextProcessor):
     def _sgm_parser(self, content):
         """
         SGM parser to parse sgm file to id, title and body.
-        This function create the `self.docs` i.e list of Document
+        This function create the `self._docs` i.e list of Document
         """
 
         for doc in re.finditer("<REUTERS(.*?)</REUTERS>", content, re.DOTALL):
@@ -85,4 +85,9 @@ class SGMPreprocessor(BaseTextProcessor):
         print(f"[Done] Documents are preprocessed in {end_preprocess - end_parsing:0.4f} seconds")
 
         
-
+    @property
+    def docs(self):
+        """
+        Property for reaching created docs
+        """
+        return self._docs
