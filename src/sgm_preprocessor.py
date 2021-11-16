@@ -3,7 +3,7 @@ import re
 import time
 from dataclasses import dataclass
 
-from base import BaseTextProcessor, BaseDataAccess
+from src.base import BaseTextProcessor, BaseDataAccess
 
 """
 Here are some global variables

@@ -1,8 +1,8 @@
 import time
 import pickle
 
-from base import BaseInvertedIndex
-import sgm_preprocessor as sp
+from src.base import BaseInvertedIndex
+import src.sgm_preprocessor as sp
 
 class InvertedIndex(BaseInvertedIndex):
     """
@@ -40,6 +40,8 @@ class InvertedIndex(BaseInvertedIndex):
         
         end_building = time.perf_counter()
         print(f"[Done] Inverted Index is builded in {end_building - start_building:0.4f} seconds")
+        
+        self.save()
             
     def save(self):
         with open("dictionary.pkl", "wb") as f:
@@ -47,11 +49,16 @@ class InvertedIndex(BaseInvertedIndex):
             f.close()
         print("[Done] Dictionary is saved!")
 
-    def load(self):
-        with open("dictionary.pkl", "rb") as f:
-            self.dictionary = pickle.load(f)
-            f.close
-        print("[Done] Dictionary is loaded!")
+    def load(self) -> bool:
+        try:
+            with open("dictionary.pkl", "rb") as f:
+                self.dictionary = pickle.load(f)
+                f.close
+            print("[Done] Dictionary is loaded!")
+            return True
+        except(FileNotFoundError):
+            print("[LOG] Dictionary not found!")
+            return False
 
     def merge(self, l, r):
         """

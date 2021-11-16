@@ -137,7 +137,8 @@ class BaseInvertedIndex:
         """
         Returns the posting list of given token.
         """
-        return self.dictionary.get(token)
+        value = self.dictionary.get(token)
+        return value if value else []
 
     def add(self, token, id) -> None:
         """
