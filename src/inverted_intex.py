@@ -109,10 +109,9 @@ class InvertedIndex(BaseInvertedIndex):
                 result.append(short[j])
                 j += 1
         
-        # We may still have elements in long list.
+        # We may still have elements in long or short list.
         # These remain elements are added to result
-
-        return result + long[i:]
+        return result + long[i:] + short[j:]
 
     def difference(self, l, r):
         """

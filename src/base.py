@@ -54,7 +54,7 @@ class BaseTextProcessor():
     
     def tokenize(self, text=None) -> List[str]:
         """
-        Tokenization operation for covnerting strings to tokens i.e words
+        Tokenization operation for converting strings to tokens i.e words
         """
         if text:
             return text.split()
@@ -76,7 +76,9 @@ class BaseTextProcessor():
 
     @property
     def stopwords(self) -> List:
-
+        """
+        Property for read and split stopwords
+        """
         return self.data.read(stopword_path).split() if stopword_path else None
 
     def case_folding(self):
@@ -89,18 +91,6 @@ class BaseTextProcessor():
         """
         self._text = self._text.casefold()
         #self._text = self._text.lower()
-
-    @abstractmethod
-    def split(self):
-        pass
-    
-    @abstractmethod
-    def normalize(self):
-        pass
-    
-    @abstractmethod
-    def stem(self):
-        pass
 
 class BaseInvertedIndex:
     """
