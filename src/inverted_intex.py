@@ -33,7 +33,7 @@ class InvertedIndex(BaseInvertedIndex):
         for doc in self.sgmp.docs:
             # Get the token list and append
             tokens = self.sgmp.tokenize(doc.content)
-            tokens = list(set(tokens))
+            tokens = list(set(tokens) - set(self.sgmp.stopwords))
 
             for token in tokens:
                 self.add(token, doc.id)

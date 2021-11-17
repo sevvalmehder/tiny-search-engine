@@ -75,13 +75,9 @@ class BaseTextProcessor():
         self._text = self._text.translate(mapper)
 
     @property
-    def stopwords(self) -> str:
-        
-        if stopword_path:
-            return self.data.read(stopword_path)
-        else:
-            print("The module for finding stopword is not implemented yet.")
-            return None
+    def stopwords(self) -> List:
+
+        return self.data.read(stopword_path).split() if stopword_path else None
 
     def case_folding(self):
         """
