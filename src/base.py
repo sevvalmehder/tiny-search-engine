@@ -26,7 +26,7 @@ class BaseDataAccess:
         Read data from given read_path with default utf-8 encoding and read('r') mode.
         """
         with open(os.path.join(os.getcwd(), read_path), encoding=encoding, mode=mode) as f:
-            data = f.read()
+            data = f.read().replace('\n', ' ')
             f.close()
 
         return data
