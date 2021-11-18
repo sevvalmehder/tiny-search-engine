@@ -4,6 +4,25 @@ Simple search system that includes inverted index builder and boolean query proc
 ## Usage
 This program uses Reuters-21578 Dataset. Please place the dataset before build inverted index.  
 Also do not forget to add stopwords in `stopwords.txt` file.
+
+The file tree must be like this:
+
+├── dictionary.pkl (not necessary)
+├── main.py
+├── README.md
+├── reuters21578
+│   ├── lewis.dtd
+│   ├── README.txt
+│   ├── reut2-000.sgm
+│   ├── reut2-001.sgm
+│   ├── ...
+│   └── reut2-021.sgm
+├── src
+│   ├── base.py
+│   ├── inverted_intex.py
+│   ├── query_processor.py
+│   └── sgm_preprocessor.py
+└── stopwords.txt
 ## Run
 Programs run with 
 `python main.py`
