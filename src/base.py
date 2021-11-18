@@ -159,7 +159,7 @@ class BaseInvertedIndex:
         
         posting = self.dictionary.get(key)
         
-        # Dind the index that showing where this id should be added
+        # Find the index that showing where this id should be added
         start = 0
         end = len(posting) - 1
 

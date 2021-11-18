@@ -39,7 +39,7 @@ class QueryProcessor:
                     exit()
                 operand = token
             else:
-                bag.append(self._index.get(token))
+                bag.append(self._index.get(token.casefold()))
                 if len(bag) > 1 and operand != None:
                     sub_result = self._operation(bag, operand)
                     if sub_result == None:
@@ -57,7 +57,6 @@ class QueryProcessor:
         Function for preprocess the query before process
         """
         self._preprocessor._text = q
-        self._preprocessor.case_folding()
         self._preprocessor.punctuation_remove()
         
         return self._preprocessor._text

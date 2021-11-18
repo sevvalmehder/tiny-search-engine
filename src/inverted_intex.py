@@ -14,6 +14,7 @@ class InvertedIndex(BaseInvertedIndex):
     - load: to load the saved dictionary if exist
     - merge: intersection operation
     - uninon: union operation
+    - difference: difference operation
     """
     def __init__(self) -> None:
         super().__init__()
