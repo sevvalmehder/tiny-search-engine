@@ -1,5 +1,6 @@
 from typing import List
 from src.inverted_intex import InvertedIndex
+from src.base import BaseTextProcessor
 
 class QueryProcessor:
     def __init__(self) -> None:
@@ -11,6 +12,9 @@ class QueryProcessor:
         if not self._index.load():
             self._index.build()
         
+        # Creat text processor for process the query
+        self._preprocessor = BaseTextProcessor()
+
         # Define operands
         self._operands = ["AND", "OR", "NOT"]
 
@@ -21,6 +25,9 @@ class QueryProcessor:
         It takes as input a query
         It returns the IDs of the matching documents sorted in ascending order.
         """
+
+        q = self._preprocess(q)
+
         bag = []      
         q_tokens = q.split()
         operand = None
@@ -44,6 +51,16 @@ class QueryProcessor:
 
 
         return bag.pop()
+
+    def _preprocess(self, q) -> str:
+        """
+        Function for preprocess the query before process
+        """
+        self._preprocessor._text = q
+        self._preprocessor.case_folding()
+        self._preprocessor.punctuation_remove()
+        
+        return self._preprocessor._text
 
     def _operation(self, bag, operand) -> List:
         """
