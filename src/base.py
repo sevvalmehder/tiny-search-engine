@@ -5,6 +5,7 @@ BaseDataAccess -> Read and write functions to access data
 BaseTextProcessor -> Abstract class which has common functions for text processor
 """
 import os
+import re
 import string
 from abc import abstractmethod
 from typing import List
@@ -59,7 +60,7 @@ class BaseTextProcessor():
         if text:
             return text.split()
         else:
-            return self.text.split()
+            return self._text.split()
     
     def punctuation_remove(self):
         """
@@ -80,6 +81,19 @@ class BaseTextProcessor():
         Property for read and split stopwords
         """
         return self.data.read(stopword_path).split() if stopword_path else None
+
+    def stopword_remove(self, text = None) -> List:
+        """
+        Stopword remove operation.
+
+        Returns a text that does not include stopwords
+        If the given text is None, then the function will use the class variable _text
+        """
+        remove_pattern = re.compile(r'\b(' + r'|'.join(self.stopwords) + r')\b\s*')
+        if not text:
+            return remove_pattern.sub('', self._text)
+        else:
+            return remove_pattern.sub('', text)
 
     def case_folding(self):
         """
@@ -172,8 +186,6 @@ class BaseInvertedIndex:
                 start = middle + 1
 
         posting.insert(start, id)
-
-
 
 
 
