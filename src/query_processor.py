@@ -21,6 +21,9 @@ class QueryProcessor(BooleanQueryProcessor):
         # Keep the document count N
         self.N = self._index.get("N")[0]
 
+        # Load the tf values
+        self.tf_index = self._index.get("tf_index")[0]
+
         # Create a dictionary to keep idf_values
         self.idf_values = {}
 
@@ -41,7 +44,10 @@ class QueryProcessor(BooleanQueryProcessor):
             bag.append(self._index.get(token.casefold()))
 
             if len(bag) > 1:
-                sub_result = self._operation(bag, 'AND')
+                if is_phrase:
+                    sub_result = self._operation(bag, 'AND')
+                else:
+                    sub_result = self._operation(bag, 'OR')
                 if sub_result == None:
                     print("sub_result is None")
                     exit()
@@ -135,10 +141,19 @@ class QueryProcessor(BooleanQueryProcessor):
         for doc_id in doc_ids:
             vector = []
             for token in q_tokens:
+                idf = self.get_idf(token)
+                tf = self.tf_index.get(doc_id).get(token)
+                if tf == None:
+                    tf = 0
+                score = tf*idf
+                vector.append(score)
+            for token in self.tf_index.get(doc_id):
                 # Calculate the log scaled tf-idf score
                 # Then create a vector for this document
+                if token in q_tokens:
+                    continue
                 idf = self.get_idf(token)
-                tf = self.get_tf(doc_id, token)
+                tf = self.tf_index.get(doc_id).get(token)
                 score = tf*idf
                 vector.append(score)
 
@@ -164,7 +179,9 @@ class QueryProcessor(BooleanQueryProcessor):
         """
         result = {}
         for doc_id, vector in document_vectors:
-            result[doc_id] = cosine(query_vector, vector)
+            extended_query_vector = query_vector
+            extended_query_vector.extend([0]*(len(vector)-len(query_vector)))
+            result[doc_id] = cosine(extended_query_vector, vector)
 
         result = sorted(result.items(), key=lambda row:row[1], reverse=True)
         return result 

@@ -1,6 +1,8 @@
 import time
 import re
+from collections import Counter
 
+from src.metrics import calculate_tf
 from src.inverted_intex import InvertedIndex
 class PositionalInvertedIndex(InvertedIndex):
     """
@@ -24,7 +26,7 @@ class PositionalInvertedIndex(InvertedIndex):
             ]
         }
         """
-        super().__init__()     
+        super().__init__()
 
     def build(self):
         """
@@ -33,6 +35,12 @@ class PositionalInvertedIndex(InvertedIndex):
 
         self.sgmp.run()
 
+        # Keep a dict for store how many times occure all unique words in document.
+        # (It is for cosine similarity calculation)
+        tf_index = {}
+
+        print(f"[Warning] Positional Inverted Index build is started. This take may some time..(<50 sn)")
+
         start_building = time.perf_counter()
         for doc in self.sgmp.docs:
             doc.content = self.sgmp.stopword_remove(doc.content)
@@ -40,13 +48,23 @@ class PositionalInvertedIndex(InvertedIndex):
             # Get the token list and append
             tokens = self.sgmp.tokenize(doc.content)
 
+            c = Counter(tokens)
             for position, token in enumerate(tokens):
                 self.add(token, {"positions": [position], "doc_id": doc.id})
 
+                if token in c.elements():
+                    if doc.id in tf_index.keys():
+                        token_dict = tf_index[doc.id]
+                        token_dict[token] = calculate_tf(c[token])
+                    else:
+                        token_dict = {token:calculate_tf(c[token])}
+                    tf_index[doc.id] = token_dict
+
         self.add("N", len(self.sgmp.docs))
+        self.add("tf_index", tf_index)
         end_building = time.perf_counter()
-        print(f"[Done] Inverted Index is builded in {end_building - start_building:0.4f} seconds")
-        
+        print(f"[Done] Positional Inverted Index is builded in {end_building - start_building:0.4f} seconds")
+
         self.save()
     
     def _insert(self, key, value):
